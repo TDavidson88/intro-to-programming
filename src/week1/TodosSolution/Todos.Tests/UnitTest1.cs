@@ -13,20 +13,20 @@ public class UnitTest1
         var formatter = new Formatters();
 
         //When
-        fullName = formatter.FormatName(firstName, lastName);
+        fullName = formatter.FormatName(lastName, firstName);
 
         //Then
         Assert.Equal("Doe, John", fullName);
     }
 
     [Theory]
-    [InlineData("Luke", "Skywalker", "Luke Skywalker")]
+    [InlineData("Luke", "Skywalker", "Skywalker, Luke")]
     public void CanFormatNameWithDifferentNames(string firstName, string lastName, string expected)
     {
         //Given
         var formatter = new Formatters();
         //When
-        var fullName = formatter.FormatName(firstName, lastName);
+        var fullName = formatter.FormatName(lastName, firstName);
         //Then
         Assert.Equal(expected, fullName);
     }
