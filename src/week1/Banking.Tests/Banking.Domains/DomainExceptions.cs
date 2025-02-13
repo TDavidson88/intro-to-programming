@@ -2,7 +2,6 @@
 
 namespace Banking.Domains;
 
-public class AccountOverdraftException : AccountTransactionException;
 public class AccountTransactionException : ArgumentOutOfRangeException;
-public class  AccountNegativeTransactionAmountException: AccountTransactionException;
-
+public class AccountOverdraftException : AccountTransactionException;
+public class AccountNegativeTransactionAmountException : AccountTransactionException;

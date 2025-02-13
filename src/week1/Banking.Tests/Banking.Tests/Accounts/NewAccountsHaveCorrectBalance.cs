@@ -29,7 +29,7 @@ public class NewAccountsHaveCorrectBalance
         var openingBalance = account.GetBalance();
         var amountToDeposit = 100.10M;
 
-        Assert.Equal(openingBalance, account._openingBalance);
+        Assert.Equal(openingBalance, account._currentBalance);
 
         account.Deposit(amountToDeposit);
 

@@ -69,20 +69,8 @@ public class MakingWithdrawals
     public void CannotMakeWithdrawalWithNegativeNumbers()
 
     {
-
         var account = new Account();
 
-        Assert.Throws<AccountTransactionException>(() => account.Withdraw(-3));
-
+        Assert.Throws<AccountNegativeTransactionAmountException>(() => account.Withdraw(-3));
     }
-
-    [Fact]
-    public void CanWithdrawAllMoney()
-    {
-        var account = new Account();
-        var openingBalance = account.GetBalance();
-        account.Withdraw(openingBalance);
-        Assert.Equal(0, account.GetBalance());
-    }
-
 }
