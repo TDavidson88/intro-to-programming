@@ -16,6 +16,15 @@ public class MakingWithdrawals
         Assert.Equal(openingBalance - amountToWithdraw, account.GetBalance());
     }
 
+    [Fact]
+    public void CanWithdrawAllMoney()
+    {
+        var account = new Account();
+        var openingBalance = account.GetBalance();
+        account.Withdraw(openingBalance);
+        Assert.Equal(0, account.GetBalance());
+    }
+
     [Fact(Skip = "will do it later")]
 
     public void OverdraftNotAllowed()
@@ -27,4 +36,53 @@ public class MakingWithdrawals
 
         Assert.Equal(openingBalance, account.GetBalance());
     }
+
+    [Fact]
+    public void WhenOverDraftMethodThrows()
+    {
+        var account = new Account();
+        var openingBalance = account.GetBalance();
+        var amountToWithdraw = openingBalance + .01M;
+        Assert.Throws<AccountOverdraftException>(() => account.Withdraw(amountToWithdraw));
+    }
+
+    [Fact]
+
+    public void WhenOverDraftBalanceIsNotReducedNotAllowed()
+    {
+        var account = new Account();
+        var openingBalance = account.GetBalance();
+        var amountToWithdraw = openingBalance + .01M;
+        try
+        {
+            account.Withdraw(amountToWithdraw);
+        }
+        catch (AccountTransactionException)
+        {
+            // ignored
+        }
+        Assert.Equal(openingBalance, account.GetBalance());
+    }
+
+    [Fact]
+
+    public void CannotMakeWithdrawalWithNegativeNumbers()
+
+    {
+
+        var account = new Account();
+
+        Assert.Throws<AccountTransactionException>(() => account.Withdraw(-3));
+
+    }
+
+    [Fact]
+    public void CanWithdrawAllMoney()
+    {
+        var account = new Account();
+        var openingBalance = account.GetBalance();
+        account.Withdraw(openingBalance);
+        Assert.Equal(0, account.GetBalance());
+    }
+
 }

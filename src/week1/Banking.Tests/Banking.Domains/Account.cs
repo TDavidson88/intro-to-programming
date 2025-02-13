@@ -1,6 +1,4 @@
 ﻿
-
-
 namespace Banking.Domains;
 
 public class Account
@@ -22,6 +20,17 @@ public class Account
 
     public void Withdraw(decimal amountToWithdraw)
     {
-        _openingBalance -= amountToWithdraw;
+        if(amountToWithdraw < 0)
+        {
+            throw new AccountNegativeTransactionAmountException();
+        }
+        if (_openingBalance >= amountToWithdraw)
+        {
+            _openingBalance -= amountToWithdraw;
+        }
+        else
+        {
+            throw new AccountOverdraftException();
+        }
     }
 }
