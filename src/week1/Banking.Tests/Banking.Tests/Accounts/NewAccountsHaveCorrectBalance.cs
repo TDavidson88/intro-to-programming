@@ -1,41 +1,23 @@
-﻿
-
-using Banking.Domains;
+﻿using Banking.Domain;
+using Banking.Tests.TestDoubles;
 
 namespace Banking.Tests.Accounts;
-public class NewAccountsHaveCorrectBalance
+public class NewAccounts
 {
     [Fact]
     public void BalanceIsCorrect()
     {
         var correctOpeningBalance = 5000M;
-        
-        var myAccount = new Account();
-        var yourAccount = new Account();
+        // "Write the Code You Wish You Had" - More Corey Haines Wisdom
+        var myAccount = new Account(new DummyBonusCalculator());
+        var yourAccount = new Account(new DummyBonusCalculator());
 
-        var myBalance= myAccount.GetBalance();
+        var myBalance = myAccount.GetBalance();
         decimal yourBalance = yourAccount.GetBalance();
 
         Assert.Equal(correctOpeningBalance, myBalance);
         Assert.Equal(correctOpeningBalance, yourBalance);
 
-    }
 
-    [Fact]
-    public void MakingADepositIncreasesBalance()
-    {
-
-        var account = new Account();
-        var openingBalance = account.GetBalance();
-        var amountToDeposit = 100.10M;
-
-        Assert.Equal(openingBalance, account._currentBalance);
-
-        account.Deposit(amountToDeposit);
-
-        var newBalance = account.GetBalance();
-
-        
-        Assert.Equal(amountToDeposit + openingBalance, account.GetBalance());
     }
 }

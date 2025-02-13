@@ -1,32 +1,38 @@
 ﻿
-namespace Banking.Domains;
+
+
+using Banking.Domains;
+
+namespace Banking.Domain;
+
 
 public class Account
 {
-    public decimal _currentBalance = 5000;  
+    private ICalculateBonusesForDepositsOnAccounts _bonusCalculator;
 
-    public bool IsGoldAccount { get; set; } 
-    public Account()
+    public Account(ICalculateBonusesForDepositsOnAccounts bonusCalculator)
     {
+        _currentBalance = 5000M;
+        _bonusCalculator = bonusCalculator;
     }
 
-    public void Deposit(decimal amountToDeposit)
-    {
-        var bonus = 0M;
-        if (IsGoldAccount)
-        {
-            bonus = amountToDeposit * 0.20M;
-        }
-        CheckTransactionAmount(amountToDeposit);
-        _currentBalance += amountToDeposit;
-    }
+    private decimal _currentBalance;
 
-
+    // Queries (methods where we ask for stuff)
     public decimal GetBalance()
     {
         return _currentBalance;
     }
+    public void Deposit(decimal amountToDeposit)
+    {
 
+        CheckTransactionAmount(amountToDeposit);
+
+        var bonus = _bonusCalculator.CalculateBonusForDeposit(_currentBalance, amountToDeposit);
+        _currentBalance += amountToDeposit + bonus;
+    }
+
+    // Commands - telling our account to do some work.
     public void Withdraw(decimal amountToWithdraw)
     {
         CheckTransactionAmount(amountToWithdraw);
@@ -41,9 +47,10 @@ public class Account
 
     }
 
-    private void CheckTransactionAmount(decimal amountToDeposit)
+    // Helpers, etc. extracted from the above.
+    private void CheckTransactionAmount(decimal amount)
     {
-        if (amountToDeposit < 0)
+        if (amount < 0)
         {
             throw new AccountNegativeTransactionAmountException();
         }
