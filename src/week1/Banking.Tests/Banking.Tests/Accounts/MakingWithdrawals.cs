@@ -1,6 +1,5 @@
-﻿
+﻿using Banking.Domains;
 using Banking.Domain;
-using Banking.Domains;
 using Banking.Tests.TestDoubles;
 
 namespace Banking.Tests.Accounts;

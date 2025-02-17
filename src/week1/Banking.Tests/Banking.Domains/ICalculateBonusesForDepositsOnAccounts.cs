@@ -1,4 +1,5 @@
-﻿namespace Banking.Domain;
+﻿namespace Banking.Domains;
+
 
 public interface ICalculateBonusesForDepositsOnAccounts
 {

@@ -1,10 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Banking.Domain;
 
-namespace Banking.Domains;
-internal class BusinessClockProvider
+public class BusinessClockProvider(TimeProvider _clock) : IProvideTheBusinessClockForBonusCalculation
 {
+    public bool WeAreCurrentlyDuringBusinessHours()
+    {
+
+        var dayOfTheWeek = _clock.GetLocalNow().DayOfWeek;
+        if (dayOfTheWeek == DayOfWeek.Saturday)
+        {
+            return false;
+        }
+        if (dayOfTheWeek == DayOfWeek.Monday)
+        {
+            return true;
+        }
+        return false;
+    }
 }
