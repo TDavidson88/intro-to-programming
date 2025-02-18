@@ -1,8 +1,17 @@
-﻿
+﻿using System;
+using System.IO;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace StringCalculator;
 public class CalculatorTests
 {
+    private readonly ITestOutputHelper _output;
+
+    public CalculatorTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
     [Fact]
      
     public void EmptyStringReturnsZero()
@@ -88,16 +97,63 @@ public class CalculatorTests
     }
 
     //Still need to implement this test 
-    //[Theory]
-    //[InlineData("1,-2")]
-    //[InlineData("-1,2")]
-    //[InlineData("-1,-2")]
-    //[InlineData("1,-2,-3")]
-    //[InlineData("-1,-2,-3")]
+    [Theory]
+    [InlineData("1,-2")]
+    [InlineData("-1,2")]
+    [InlineData("-1,-2")]
+    [InlineData("1,-2,-3")]
+    [InlineData("-1,-2,-3")]
 
-    //public void StringWithNegativeNumberThrowsException(string input)
+    public void StringWithNegativeNumberThrowsException(string input)
+    {
+        var calculator = new Calculator();
+        var exception = Assert.Throws<ArgumentException>(() => calculator.Add(input));
+        Assert.Equal("Negatives not allowed", exception.Message.Substring(0, 21));
+    }
+
+    [Fact]
+
+    public void ListWithAllTheNegavitiveNumbers()
+    {
+        var calculator = new Calculator();
+        var exception = Assert.Throws<ArgumentException>(() => calculator.Add("-1,-2,-3"));
+        LogException(exception.Message); // Log the exception message to a file
+        Assert.Equal("Negatives not allowed -1, -2, -3", exception.Message);
+    }
+
+    private void LogException(string message)
+    {
+        var logFilePath = "exception_log.txt";
+        using (var writer = new StreamWriter(logFilePath, true))
+        {
+            writer.WriteLine($"{DateTime.Now}: {message}");
+        }
+        _output.WriteLine(message); // Log the message to the test output
+    }
+
+    [Theory]
+    [InlineData("1001,2", 2)]
+    [InlineData("1002,3", 3)]
+    [InlineData("1003,4", 4)]
+    [InlineData("1004,5", 5)]
+
+    public void StringWithNumberGreaterThan1000IsIgnored(string input, int expected)
+    {
+        var calculator = new Calculator();
+        var result = calculator.Add(input);
+        Assert.Equal(expected, result);
+    }
+    // still need to implement this test
+    //[Theory]
+    //[InlineData("//[***]\n1***2", 3)]
+    //[InlineData("//[***]\n2***3***4***5", 14)]
+    //[InlineData("//[***]\n3***4***5***6***7", 25)]
+    //[InlineData("//[***]\n4***5***6***7***8***9", 39)]
+
+    //public void StringWithMultipleNumbersAndCustomDelimiterWithAnyLengthReturnsSum(string input, int expected)
     //{
     //    var calculator = new Calculator();
-    //    Assert.Throws<Exception>(() => calculator.Add(input));
+    //    var result = calculator.Add(input);
+    //    Assert.Equal(expected, result);
     //}
 }

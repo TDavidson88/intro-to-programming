@@ -1,6 +1,7 @@
 ﻿
 using System.Linq;
 using System.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class Calculator
 {
@@ -12,37 +13,39 @@ public class Calculator
             return 0;
         }
 
-
-        var delimiters = new[] { ',', '\n', '#' };
+        var delimiters = new[] { ',', '\n' };
 
         if (numbers.StartsWith("//"))
         {
             var delimiter = numbers[2];
             numbers = numbers.Substring(4);
             delimiters = new[] { delimiter };
-
-
-            var parts = numbers.Split(delimiters);
-            var sum = 0;
-            foreach (var num in parts)
-            {
-                    sum += int.Parse(num);
-                    
-            }
-            return sum;
         }
 
-        else
+        var parts = numbers.Split(delimiters);
+        var sum = 0;
+        var negativeNumbers = new List<int>();
+
+        foreach (var part in parts)
         {
-            var parts = numbers.Split(delimiters);
-            var sum = 0;
-            foreach (var num in parts)
+            var number = int.Parse(part);
+            if (number < 0)
             {
-                    sum += int.Parse(num);
-
+                negativeNumbers.Add(number);
             }
-            return sum;
-
+            if (number > 1000)
+            {
+                continue;
+            }
+            sum += number;
         }
+
+        if (negativeNumbers.Any())
+        {
+            throw new ArgumentException("Negatives not allowed " + string.Join(", ", negativeNumbers));
+        }
+
+        return sum;
     }
 }
+
