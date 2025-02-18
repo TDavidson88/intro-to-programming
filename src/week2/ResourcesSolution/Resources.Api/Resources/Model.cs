@@ -1,4 +1,4 @@
-﻿namespace Resources.Api.Resources;
+﻿namespace ResourceSolution.ResourcesSolution.Resources.Api.Resources;
 
 /* {
     id: '2',

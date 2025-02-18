@@ -1,4 +1,4 @@
-namespace ResourceSolution.Resources.Api;
+namespace ResourceSolution.ResourcesSolution.Resources.Api.Resources;
 
 public class Api
 {

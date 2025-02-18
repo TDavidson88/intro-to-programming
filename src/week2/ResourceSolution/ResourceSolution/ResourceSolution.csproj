@@ -11,11 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\Resources\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Resource.Api.csproj" />
+    <None Include="ResourcesSolution\Resources.Api\Resource.Api.csproj" />
+    <None Include="ResourcesSolution\ResourcesSolution.sln" />
   </ItemGroup>
 
 </Project>

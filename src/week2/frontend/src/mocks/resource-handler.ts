@@ -23,3 +23,9 @@ const FAKE_DATA: ResourceListItem[] = [
     tags: ['Angular', 'TypeScript', 'Training', 'State', 'Signals', 'Redux'],
   },
 ];
+export const ResourceHandlers = [
+  //   http.get('http://localhost:1338/resources', async () => {
+  //     await delay(3000);
+  //     return HttpResponse.json(FAKE_DATA);
+  //   }),
+];
