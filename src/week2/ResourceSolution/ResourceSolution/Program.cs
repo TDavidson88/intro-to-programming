@@ -1,6 +1,7 @@
-namespace ResourceSolution.ResourcesSolution.Resources.Api.Resources;
 
-public class Api
+namespace ResourceSolution;
+
+public class Program
 {
     public static void Main(string[] args)
     {
