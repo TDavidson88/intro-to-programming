@@ -7,10 +7,11 @@ Accept: application/json
 
 POST {{Resources.Api_HostAddress}}/resources
 Content-Type: application/json
+
 {
-    "title": "Mozilla Developer Network",
-    "description": "The Mozilla Developer Network (MDN) provides information about Open Web technologies including HTML, CSS, and APIs for both Web sites and HTML5 Apps. It also documents Mozilla products, like Firefox OS.",
-    "link: "https://mdn.com",
-    "linkText": "MDN",
-    "tags": ["HTML", "CSS", "JAVASCRIPT"]
+  "title": "Mozilla Developer Network",
+  "description": "The Web Stuff",
+  "link": "https://mdn.com",
+  "linkText": "MDN",
+  "tags": ["HTML", "CSS", "JAVASCRIPT"]
 }
