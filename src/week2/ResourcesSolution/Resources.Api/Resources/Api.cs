@@ -1,16 +1,17 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Resources.Api.Resources;
 
 
 // Get a 200 Ok when you do a GET /resources
-public class Api : ControllerBase
+public class Api(IValidator<ResourceListItemCreateModel> validator) : ControllerBase
 {
 
-  [HttpGet("/resources")]
-  public async Task<ActionResult> GetAllResources()
-  {
-    var fakeData = new List<ResourceListItemModel>()
+    [HttpGet("/resources")]
+    public async Task<ActionResult> GetAllResources()
+    {
+        var fakeData = new List<ResourceListItemModel>()
     {
         new ResourceListItemModel()
         {
@@ -23,22 +24,28 @@ public class Api : ControllerBase
           Tags = [".NET","Microsoft", "APIS"]
         }
     };
-    return Ok(fakeData);
-  }
+        return Ok(fakeData);
+    }
 
-  [HttpPost("/resources")]
-  public async Task<ActionResult> AddResourceItem([FromBody] ResourceListItemCreateModel request)
-  {
-    var fakeResponse = new ResourceListItemModel
+    [HttpPost("/resources")]
+    public async Task<ActionResult> AddResourceItem([FromBody] ResourceListItemCreateModel request)
     {
-      Id = Guid.NewGuid(),
-      Title = request.Title,
-      Description = request.Description,
-      CreatedBy = "sue@aol.com", // ??
-      CreatedOn = DateTime.Now,
-      Link = request.Link,
-      Tags = request.Tags,
-    };
-    return Ok(fakeResponse);
-  }
+        var validations = await validator.ValidateAsync(request);
+        if (!validations.IsValid)
+        {
+            return BadRequest(validations.Errors);
+        }
+
+        var fakeResponse = new ResourceListItemModel
+        {
+            Id = Guid.NewGuid(),
+            Title = request.Title,
+            Description = request.Description,
+            CreatedBy = "sue@aol.com", // ??
+            CreatedOn = DateTime.Now,
+            Link = request.Link,
+            Tags = request.Tags,
+        };
+        return Ok(fakeResponse);
+    }
 }
