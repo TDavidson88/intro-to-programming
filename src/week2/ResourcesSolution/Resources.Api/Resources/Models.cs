@@ -1,4 +1,5 @@
 using FluentValidation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Resources.Api.Resources;
 
@@ -15,13 +16,13 @@ namespace Resources.Api.Resources;
 
 public record ResourceListItemModel
 {
-  public Guid Id { get; set; }
-  public string Title { get; set; } = string.Empty;
-  public string Description { get; set; } = string.Empty;
-  public string Link { get; set; } = string.Empty;
-  public string CreatedBy { get; set; } = string.Empty;
-  public DateTimeOffset CreatedOn { get; set; }
-  public List<string> Tags { get; set; } = new();
+    public Guid Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Link { get; set; } = string.Empty;
+    public string CreatedBy { get; set; } = string.Empty;
+    public DateTimeOffset CreatedOn { get; set; }
+    public List<string> Tags { get; set; } = new();
 
 }
 
@@ -29,19 +30,19 @@ public record ResourceListItemModel
 
 public class ResourceListItemCreateModel
 {
-  public string Title { get; set; } = string.Empty;
-  public string Description { get; set; } = string.Empty;
-  public string Link { get; set; } = string.Empty;
-  public string LinkText { get; set; } = string.Empty;
-  public List<string> Tags { get; set; } = new();
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Link { get; set; } = string.Empty;
+    public string LinkText { get; set; } = string.Empty;
+    public List<string> Tags { get; set; } = new();
 }
 
 public class ResourceListItemCreateModelValidations : AbstractValidator<ResourceListItemCreateModel>
 {
     public ResourceListItemCreateModelValidations()
     {
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.Link).NotEmpty();
-        RuleFor(x => x.LinkText).NotEmpty().MaximumLength(10);
+        RuleFor(m => m.Title).NotEmpty().MinimumLength(3).MaximumLength(100);
+        RuleFor(m => m.Link).NotEmpty();
+        RuleFor(m => m.LinkText).NotEmpty().MinimumLength(3).MaximumLength(10);
     }
 }
