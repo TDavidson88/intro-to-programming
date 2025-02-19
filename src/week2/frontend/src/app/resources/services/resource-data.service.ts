@@ -1,11 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-
 import { inject } from '@angular/core';
-
 import { ResourceListItem, ResourceListItemCreateModel } from '../types';
-
 import { environment } from '../../environments/environment';
-
 export class ResourceDataService {
   private readonly URL = environment.apiUrl;
 
@@ -16,6 +12,8 @@ export class ResourceDataService {
   }
 
   addResource(item: ResourceListItemCreateModel) {
+    // item.tags = string
+    // item.tags = string[] "dog cat mouse mouse" -> ["dog", "cat", "mouse"]
     return this.client.post<ResourceListItem>(this.URL + 'resources', item);
   }
 }

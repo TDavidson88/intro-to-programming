@@ -1,39 +1,31 @@
-import { patchState, signalStore, withHooks, withMethods } from '@ngrx/signals';
-import { addEntities, addEntity, withEntities } from '@ngrx/signals/entities';
-import { ResourceListItem, ResourceListItemCreateModel } from '../types';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { mergeMap, pipe, switchMap, tap } from 'rxjs';
-import { ResourceDataService } from './resource-data.service';
-import { inject } from '@angular/core';
+import { tagMaker } from './tagmaker';
 
-export const ResourceStore = signalStore(
-  withEntities<ResourceListItem>(),
-  withMethods((store) => {
-    const service = inject(ResourceDataService);
-    return {
-      add: rxMethod<ResourceListItemCreateModel>(
-        pipe(
-          mergeMap((item) =>
-            service
-              .addResource(item)
-              .pipe(tap((r) => patchState(store, addEntity(r)))),
-          ),
-        ),
-      ),
-      _load: rxMethod<void>(
-        pipe(
-          switchMap(() =>
-            service
-              .getResource()
-              .pipe(tap((r) => patchState(store, addEntities(r)))),
-          ),
-        ),
-      ),
-    };
-  }),
-  withHooks({
-    onInit(store) {
-      store._load();
-    },
-  }),
-);
+describe('Making Tags', () => {
+  it('Can Make Some Tags Simple', () => {
+    const results = tagMaker('dog cat mouse');
+
+    expect(results).toEqual(['dog', 'cat', 'mouse']);
+  });
+
+  it('Can Make Some Tags Duplicates', () => {
+    const results = tagMaker('dog cat bear bear');
+    // fix this
+    expect(results).toEqual(['dog', 'cat', 'bear']);
+  });
+
+  it('Can Make Some Tags Empty should return an Empty Array', () => {
+    const results = tagMaker('');
+    // blah
+
+    expect(results).toEqual([]);
+  });
+  it('Can Make Some Tags Convert to Lower Case', () => {
+    const results = tagMaker('DOG cat Bear');
+
+    expect(results).toEqual(['dog', 'cat', 'bear']);
+  });
+  it('Strips out Extra Spaces', () => {
+    const results = tagMaker('dog   cat   bird   ');
+    expect(results).toEqual(['dog', 'cat', 'bird']);
+  });
+});
