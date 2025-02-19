@@ -27,7 +27,6 @@ import { BankStore } from '../services/bank.store';
 })
 export class DepositComponent {
   store = inject(BankStore);
-  //   currentBalance = this.store.getCurrentBalance();
   form = new FormGroup({
     amount: new FormControl<number>(0, { nonNullable: true }),
   });

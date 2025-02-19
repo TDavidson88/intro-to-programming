@@ -1,3 +1,5 @@
+// 1. What kind of data are you going to keep in memory in this store.
+
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 
 type BankState = {
@@ -12,7 +14,7 @@ export const BankStore = signalStore(
     return {
       deposit: (amount: number) =>
         patchState(store, { currentBalance: store.currentBalance() + amount }),
-      withdrawal: (amount: number) =>
+      withdraw: (amount: number) =>
         patchState(store, { currentBalance: store.currentBalance() - amount }),
     };
   }),
