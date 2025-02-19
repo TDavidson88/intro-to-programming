@@ -1,5 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ResourceStore } from '../services/resource.store';
 import { ResourceListItemCreateModel } from '../types';
 
@@ -23,6 +28,21 @@ import { ResourceListItemCreateModel } from '../types';
           />
         </label>
       </div>
+      @let titlef = form.controls.title;
+      @if (titlef.invalid && (titlef.dirty || titlef.touched)) {
+        <div class="alert alert-error">
+          @if (titlef.hasError('required')) {
+            <p>We need a title to display for this resource.</p>
+          }
+          @if (titlef.hasError('minlength')) {
+            @let mlError = titlef.getError('minlength');
+            <p>This must be at least {{ mlError['requiredLength'] }} letters</p>
+          }
+          @if (titlef.hasError('maxlength')) {
+            <p>This can't be more than 100 characters</p>
+          }
+        </div>
+      }
       <div class="form-control">
         <label for="description" class="label"
           >Description:
@@ -46,6 +66,14 @@ import { ResourceListItemCreateModel } from '../types';
           />
         </label>
       </div>
+      @let linkf = form.controls.link;
+      @if (linkf.invalid && (linkf.dirty || linkf.touched)) {
+        <div class="alert alert-error">
+          @if (linkf.hasError('required')) {
+            <p>A link is required</p>
+          }
+        </div>
+      }
       <div class="form-control">
         <label for="linkText" class="label"
           >Link Text:
@@ -57,6 +85,23 @@ import { ResourceListItemCreateModel } from '../types';
             formControlName="linkText"
           />
         </label>
+        @let ltf = form.controls.linkText;
+        @if (ltf.invalid && (ltf.dirty || ltf.touched)) {
+          <div class="alert alert-error">
+            @if (ltf.hasError('required')) {
+              <p>You have to give us some text to show with the link</p>
+            }
+            @if (ltf.hasError('minlength')) {
+              @let mlError = ltf.getError('minlength');
+              <p>
+                This must be at least {{ mlError['requiredLength'] }} letters
+              </p>
+            }
+            @if (ltf.hasError('maxlength')) {
+              <p>This can't be more than 20 characters</p>
+            }
+          </div>
+        }
       </div>
       <div class="form-control">
         <label for="tags" class="label"
@@ -77,19 +122,42 @@ import { ResourceListItemCreateModel } from '../types';
 })
 export class CreateComponent {
   store = inject(ResourceStore);
+
   form = new FormGroup({
-    title: new FormControl<string>('', { nonNullable: true }),
+    title: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(100),
+      ],
+    }),
     description: new FormControl<string>('', { nonNullable: true }),
-    link: new FormControl<string>('', { nonNullable: true }),
-    linkText: new FormControl<string>('', { nonNullable: true }),
+    link: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    linkText: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(20),
+      ],
+    }),
     tags: new FormControl<string>('', { nonNullable: true }),
   });
 
   addItem() {
-    const itemToSend = this.form
-      .value as unknown as ResourceListItemCreateModel;
-    this.store.add(itemToSend);
+    if (this.form.valid) {
+      const itemToSend = this.form
+        .value as unknown as ResourceListItemCreateModel;
+      this.store.add(itemToSend);
 
-    this.form.reset();
+      this.form.reset();
+    } else {
+      this.form.markAllAsTouched();
+      console.log('Form is invalid');
+    }
   }
 }
