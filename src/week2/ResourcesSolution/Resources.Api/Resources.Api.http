@@ -1,4 +1,3 @@
-
 @Resources.Api_HostAddress = http://localhost:1338
 
 GET {{Resources.Api_HostAddress}}/resources

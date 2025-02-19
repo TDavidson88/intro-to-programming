@@ -8,13 +8,13 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
 {
-    // classroom demonstration - probably ok, but check with your local authorities. ;)
-    options.AddDefaultPolicy(pol =>
-    {
-        pol.AllowAnyHeader();
-        pol.WithMethods();
-        pol.AllowAnyOrigin();
-    });
+  // classroom demonstration - probably ok, but check with your local authorities. ;)
+  options.AddDefaultPolicy(pol =>
+  {
+    pol.AllowAnyHeader();
+    pol.WithMethods();
+    pol.AllowAnyOrigin();
+  });
 });
 
 var app = builder.Build();
@@ -23,7 +23,7 @@ app.UseCors();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+  app.MapOpenApi();
 }
 
 app.UseAuthorization();
