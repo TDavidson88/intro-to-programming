@@ -6,24 +6,19 @@ namespace Resources.Api.Resources;
 
 
 // Get a 200 Ok when you do a GET /resources
-public class Api(IValidator<ResourceListItemCreateModel> validator, IDocumentSession session) : ControllerBase
+public class Api(IValidator<ResourceListItemCreateModel> validator, IDocumentSession session, ILogger<Api> _logger) : ControllerBase
 {
 
     [HttpGet("/resources")]
-    public async Task<ActionResult> GetAllResources()
+    public async Task<ActionResult> GetAllResources(CancellationToken token)
     {
-        var response = await session.Query<ResourceListItemEntity>()
-           .Select(r => new ResourceListItemModel()
-           {
 
-               Id = r.Id,
-               CreatedBy = r.CreatedBy,
-               CreatedOn = r.CreatedOn,
-               Description = r.Description,
-               Link = r.Link,
-               Tags = r.Tags,
-               Title = r.Title,
-           }).ToListAsync();
+        var response = await session.Query<ResourceListItemEntity>()
+         .ProjectToResponse()
+           .OrderBy(r => r.CreatedOn)
+           .ThenBy(r => r.CreatedBy)
+           .ToListAsync(token);
+
         return Ok(response);
     }
 
@@ -31,6 +26,7 @@ public class Api(IValidator<ResourceListItemCreateModel> validator, IDocumentSes
     public async Task<ActionResult> AddResourceItem([FromBody] ResourceListItemCreateModel request)
     {
 
+        await Task.Delay(3000);
         var validations = await validator.ValidateAsync(request);
 
         if (validations.IsValid == false)
@@ -38,20 +34,11 @@ public class Api(IValidator<ResourceListItemCreateModel> validator, IDocumentSes
             return BadRequest(validations.ToDictionary()); // more on that later.
         }
 
-        // Do the "Business Stuff" (this is often the hard part)
-        // Create and store an entity in the database
+        var entityToSave = request.MapFromRequestModel();
+        entityToSave.Id = Guid.NewGuid();
+        entityToSave.CreatedBy = "sue@aol.com";
+        entityToSave.CreatedOn = DateTimeOffset.Now;
 
-        var entityToSave = new ResourceListItemEntity
-        {
-            Id = Guid.NewGuid(),
-            Description = request.Description,
-            Link = request.Link,
-            Tags = request.Tags,
-            LinkText = request.LinkText,
-            Title = request.Title,
-            CreatedBy = "sue@aol.com", // slimed for now
-            CreatedOn = DateTimeOffset.Now,
-        };
 
         session.Store(entityToSave);
         await session.SaveChangesAsync();
@@ -59,18 +46,20 @@ public class Api(IValidator<ResourceListItemCreateModel> validator, IDocumentSes
 
 
         // From that entity, create a response to send to the requester
-        var response = new ResourceListItemModel
-        {
-            Id = entityToSave.Id,
-            Title = entityToSave.Title,
-            Description = entityToSave.Description,
-            CreatedBy = entityToSave.CreatedBy,
-            CreatedOn = entityToSave.CreatedOn,
-            Link = entityToSave.Link,
-            Tags = entityToSave.Tags
-        };
+        // Mapping from ResourceListItemEntity to ResourceListItemModel
+
+        var response = entityToSave.MapToResponse();
+
 
         // TODO: Consider making this a 201 Created. More "nuanced".
         return Ok(response);
+    }
+
+    // GET /resources/3898398039=93898398983-39879839
+    [HttpGet("/resources/{id:guid}")]
+    public async Task<ActionResult> GetById(Guid id)
+    {
+
+        return Ok();
     }
 }
