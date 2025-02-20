@@ -15,3 +15,8 @@ Content-Type: application/json
   "linkText": "NGRX",
   "tags": ["Angular", "State", "Redux", "Signals"]
 }
+
+
+###
+
+GET {{Resources.Api_HostAddress}}/resources/pizza
